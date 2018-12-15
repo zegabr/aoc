@@ -1,0 +1,1 @@
+This is a repo for Python training and my adventofcode.com problems solutions
