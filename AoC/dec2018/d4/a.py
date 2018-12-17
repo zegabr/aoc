@@ -51,8 +51,7 @@ for i in range(len(t)):
         t[i].ind=curr
     else:
         curr=t[i].ind
-
-
+        
 #till here everything is working properly
 dic = dict()
 for i in range(len(t)):
