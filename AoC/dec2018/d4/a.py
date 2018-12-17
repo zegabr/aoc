@@ -52,7 +52,33 @@ for i in range(len(t)):
     else:
         curr=t[i].ind
 
-for s in t:
-    s.p()
 
 #till here everything is working properly
+dic = dict()
+for i in range(len(t)):
+    #t[i].p()
+    if t[i].op=='w':
+        if t[i].ind not in dic:
+            dic[t[i].ind]=t[i].minu-t[i-1].minu
+        else:
+            dic[t[i].ind]+=t[i].minu-t[i-1].minu
+idans=0
+maior=-1
+for g,v in dic.items():
+    if v>maior:
+        idans=g
+        maior=v
+#print(idans)
+
+mins=[0 for x in range(60)]
+minuans=60
+vezesnominuans=0
+for i in range(len(t)):
+    if t[i].op=='s' and t[i].ind==idans:
+        for k in range(t[i].minu,t[i+1].minu):
+            mins[k]+=1
+            if mins[k]>vezesnominuans:
+                minuans=k
+                vezesnominuans=mins[k]
+#print(minuans)
+print(idans*minuans)
