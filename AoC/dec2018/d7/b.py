@@ -1,3 +1,10 @@
+##constants
+qworkers=2  #2 for base case and 5 for bigger case
+alphabetlimit='F' # F for base case and Z for biggercase
+secondoffset=0 #0 for base case and 60 for biggercase
+###
+
+
 import sys
 inp = sys.stdin.read().split('\n')
 g=[set() for x in range(10+ord('Z'))]##dicionario de sets, grafo
@@ -15,7 +22,7 @@ for i in range(len(inp)):
     
 ans=""
 pq=[]#heap.. ish
-for c in range(ord('A'),1+ord('F')):#############trocar F pra Z
+for c in range(ord('A'),1+ord(alphabetlimit)):
     #print(c, g[c])
     if grau[c]==0:
         pq.append(c)
@@ -26,9 +33,9 @@ step=[]
 steps.append(pq)
 #print(steps)
 def timefor(num):
-    return num - ord('A') + 1   ################colocar +60
+    return num - ord('A') + 1 + secondoffset
 
-while(len(pq)>0):
+while len(pq)>0:
     pq.sort()
     pq.reverse()
     parent=pq[-1]
@@ -50,44 +57,52 @@ while(len(pq)>0):
 
 steps=[steps[x] for x in range(len(steps)) if steps[x]!=[]]
 print(ans) 
+#print(steps)
+tempos=[0 for i in range(qworkers)]
+tempo=0
+liberados=set()
+feitos=set()
+terminaranotempo=dict()
+maxtime=sum([timefor(num) for num in range(ord('A'),ord(alphabetlimit)+1)])
+print(maxtime)
+liberados.add(steps[0][0])
+s=dict()
+for step in steps:
+    s[step[0]]=step[1]
+steps=s
+del s
 print(steps)
 ##working till here
 
+while tempo<=maxtime and len(feitos)<len(ans):
+    deletar =[] 
 
-total=len(ans)#total de tarefas a serem feitas
-
-tempos=[0 for i in range(2)]##################3mudar pra 5 
-tempo=0##tempo global
-liberados=set()
-liberados.add(steps[0][0])##prontos
-feitos=set()##terminados
-terminadoem={}##sendo feitos
-while len(feitos)<total:
-    tempo+=1
-    for num in liberados:
-        if num not in feitos and num not in terminadoem:
+    for num in sorted(list(liberados)):
+        if num not in terminaranotempo.keys() and num not in feitos:
             for i in range(len(tempos)):
                 if tempo>tempos[i]:
                     tempos[i]=tempo+num-1
-                    terminadoem[num]=tempos[i]
+                    terminaranotempo[num]=tempos[i]
                     break
-    print(terminadoem)
-    for k,v in terminadoem.items():
+    
+
+    for k,v in terminaranotempo.items():
         if tempo>=v:
             feitos.add(k)
-            liberados.discard(k)
-            for step in steps:
-                if step[0]==k:
-                    for num in step[1]:
-                        liberados.add(num)
-                    break
+            deletar.append(k)
+            for num in steps[k]:
+                #BOTAR UM IF AQUI PRA SABER SE TOODS OS PRECEDENTES TERMINARAM (da pra fazr o grafo inverso no inicio e usar ele aqui)
+                liberados.add(num)
+    for num in deletar:
+        del terminaranotempo[num]
 
-
-    
-    print("liberados = ",liberados)
-    print("feitos = ",feitos)
-    print("tempos = ", tempos)
-    print("tempo = ",tempo)
+    print("feitos: ", [chr(x+ord('A')-1-secondoffset) for x in feitos])
+    print("prontos: ",[chr(x+ord('A')-1-secondoffset) for x in liberados])
+    print("em progresso: ", terminaranotempo)
+    print("tempos: ", tempos)
+    print("tempo total: ", tempo, "s")
     print()
-    
-print(tempo+1)
+    tempo+=1
+
+
+print(tempo)
