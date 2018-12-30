@@ -8,6 +8,7 @@ secondoffset=0 #0 for base case and 60 for biggercase
 import sys
 inp = sys.stdin.read().split('\n')
 g=[set() for x in range(10+ord('Z'))]##dicionario de sets, grafo
+g2=[set() for x in range(10+ord('Z'))]##grafo invertido
 grau=[0 for x in range(10+ord('Z'))]## grau de entrada dos vertices
 visited=grau#elementos visitados
 for i in range(len(inp)):
@@ -18,8 +19,10 @@ for i in range(len(inp)):
     a,b=inp[i]
     #print(ord(a),ord(b))
     g[ord(a)].add(ord(b))
+    g2[ord(b)].add(ord(a))
     grau[ord(b)]+=1
-    
+
+
 ans=""
 pq=[]#heap.. ish
 for c in range(ord('A'),1+ord(alphabetlimit)):
@@ -72,15 +75,27 @@ for step in steps:
 steps=s
 del s
 print(steps)
+
+precedentes=dict()
+for a in range(len(g2)):
+    if g2[a]!=set():
+        precedentes[timefor(a)]={timefor(b) for b in g2[a]}
+
 ##working till here
+def libera(num):
+    for precedente in precedentes[num]:
+        if precedente not in feitos:
+            return 0
+    return 1
 
 while tempo<=maxtime and len(feitos)<len(ans):
-    deletar =[] 
+    
 
+    tempo+=1
     for num in sorted(list(liberados)):
         if num not in terminaranotempo.keys() and num not in feitos:
             for i in range(len(tempos)):
-                if tempo>tempos[i]:
+                if tempo>=tempos[i]:
                     tempos[i]=tempo+num-1
                     terminaranotempo[num]=tempos[i]
                     break
@@ -89,12 +104,11 @@ while tempo<=maxtime and len(feitos)<len(ans):
     for k,v in terminaranotempo.items():
         if tempo>=v:
             feitos.add(k)
-            deletar.append(k)
+            
             for num in steps[k]:
-                #BOTAR UM IF AQUI PRA SABER SE TOODS OS PRECEDENTES TERMINARAM (da pra fazr o grafo inverso no inicio e usar ele aqui)
-                liberados.add(num)
-    for num in deletar:
-        del terminaranotempo[num]
+                if libera(num):
+                    liberados.add(num)
+    
 
     print("feitos: ", [chr(x+ord('A')-1-secondoffset) for x in feitos])
     print("prontos: ",[chr(x+ord('A')-1-secondoffset) for x in liberados])
@@ -102,7 +116,6 @@ while tempo<=maxtime and len(feitos)<len(ans):
     print("tempos: ", tempos)
     print("tempo total: ", tempo, "s")
     print()
-    tempo+=1
 
 
 print(tempo)

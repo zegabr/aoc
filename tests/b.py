@@ -22,3 +22,6 @@ class struct:
 
 obj=struct() 
 print(obj.x, obj.gety())
+
+print(obj)
+
