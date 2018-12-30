@@ -1,7 +1,7 @@
 ##constants
-qworkers=2  #2 for base case and 5 for bigger case
-alphabetlimit='F' # F for base case and Z for biggercase
-secondoffset=0 #0 for base case and 60 for biggercase
+qworkers=5  #2 for base case and 5 for bigger case
+alphabetlimit='Z' # F for base case and Z for biggercase
+secondoffset=60 #0 for base case and 60 for biggercase
 ###
 
 
@@ -96,11 +96,10 @@ def libera(num):
 ##working till here
 
 while tempo<=maxtime and len(feitos)<len(ans):
-    tempo+=1
     for num in sorted(list(liberados)):
         if num not in terminaranotempo.keys() and num not in feitos:
             for i in range(len(tempos)):
-                if tempo>=tempos[i]:
+                if tempo>tempos[i]:
                     tempos[i]=tempo+num-1
                     terminaranotempo[num]=tempos[i]
                     break
@@ -113,6 +112,7 @@ while tempo<=maxtime and len(feitos)<len(ans):
                 for num in graph[k]:
                     if libera(num):
                         liberados.add(num)
+    tempo+=1
     
 
     print("feitos: ", [chr(x+ord('A')-1-secondoffset) for x in feitos])
@@ -123,4 +123,4 @@ while tempo<=maxtime and len(feitos)<len(ans):
     print()
 
 
-print(tempo)
+print(tempo-1)
