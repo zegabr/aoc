@@ -60,7 +60,6 @@ while len(pq)>0:
 
 steps=[steps[x] for x in range(len(steps)) if steps[x]!=[]]
 print(ans) 
-#print(steps)
 tempos=[0 for i in range(qworkers)]
 tempo=0
 liberados=set()
@@ -68,29 +67,35 @@ feitos=set()
 terminaranotempo=dict()
 maxtime=sum([timefor(num) for num in range(ord('A'),ord(alphabetlimit)+1)])
 print(maxtime)
-liberados.add(steps[0][0])
-s=dict()
-for step in steps:
-    s[step[0]]=step[1]
-steps=s
-del s
-print(steps)
+
 
 precedentes=dict()
+graph=dict()
 for a in range(len(g2)):
     if g2[a]!=set():
         precedentes[timefor(a)]={timefor(b) for b in g2[a]}
+for a in range (len(g)):
+    if g[a]!=set():
+        graph[timefor(a)]={timefor(b) for b in g[a]}
+primeiros=[]
+for i in range(timefor(ord('A')), timefor(ord(alphabetlimit)+1)):
+    if i not in precedentes.keys():
+        primeiros.append(i)
+liberados={x for x in primeiros}
+print(precedentes, len(precedentes))
+print(graph,len(graph))
+print(liberados, len(liberados))
 
-##working till here
+
+
 def libera(num):
     for precedente in precedentes[num]:
         if precedente not in feitos:
             return 0
     return 1
+##working till here
 
 while tempo<=maxtime and len(feitos)<len(ans):
-    
-
     tempo+=1
     for num in sorted(list(liberados)):
         if num not in terminaranotempo.keys() and num not in feitos:
@@ -104,10 +109,10 @@ while tempo<=maxtime and len(feitos)<len(ans):
     for k,v in terminaranotempo.items():
         if tempo>=v:
             feitos.add(k)
-            
-            for num in steps[k]:
-                if libera(num):
-                    liberados.add(num)
+            if k in graph.keys():
+                for num in graph[k]:
+                    if libera(num):
+                        liberados.add(num)
     
 
     print("feitos: ", [chr(x+ord('A')-1-secondoffset) for x in feitos])
