@@ -67,13 +67,15 @@ while len(feitos)<total:
     for num in liberados:
         if num not in feitos and num not in terminadoem:
             for i in range(len(tempos)):
-                if tempos[i]<tempo:
+                if tempo>tempos[i]:
                     tempos[i]=tempo+num-1
                     terminadoem[num]=tempos[i]
                     break
+    print(terminadoem)
     for k,v in terminadoem.items():
-        if tempo==v:
+        if tempo>=v:
             feitos.add(k)
+            liberados.discard(k)
             for step in steps:
                 if step[0]==k:
                     for num in step[1]:
