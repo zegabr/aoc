@@ -12,6 +12,7 @@ used=[0 for x in range(tam)]
 for i in range(tam):
 	if t[i]==0:
 		stack.append(i)
+                #tentar usar queue e em seguida tentar fazer a iteracao de fora pra dentro
 		qmeta=t[i+1]
 		used[i]=used[i+1]=1
 		node=[i,[]]
